@@ -9,7 +9,15 @@ export function App () {
     ])
     const activeFilter = filters.find(f => f.isFiltering)?.nameFilter // Para mi lista derivada (mostrar mis datos segun el tipo de iltro que esté en acción)
     const [inputTask, setInputTask] = useState('')
-    const [tasks, setTasks] = useState([])
+    const [tasks, setTasks] = useState(() => {
+        try {
+            const storedTasks = localStorage.getItem("tasks") // Busco si hay algo en local storage para inicializar
+            return storedTasks ? JSON.parse(storedTasks) : []
+        } catch (error) {
+            console.error("Error al parsear las tareas de localStorage", error)
+            return []
+        }
+    })
 
 
     // --- Tasks ---
@@ -100,8 +108,8 @@ export function App () {
 
 
     useEffect(() =>{
-        // Cuerpo
-    },[tasks, filters])
+        localStorage.setItem("tasks", JSON.stringify(tasks))
+    },[tasks])
     
     return (
     <div className='min-h-screen bg-gray-500 flex items-center justify-center'>
